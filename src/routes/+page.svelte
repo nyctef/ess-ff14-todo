@@ -22,10 +22,7 @@
 <input type="text" placeholder="add new todo" bind:this={new_todo_name} />
 <button
   on:click={() => {
-    todos.update((todos) => {
-      todos.push({ text: new_todo_name.value, done: false });
-      return todos;
-    });
+    $todos = [...$todos, { text: new_todo_name.value, done: false }];
     new_todo_name.value = '';
   }}>add</button
 >
