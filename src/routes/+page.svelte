@@ -46,5 +46,10 @@
 
 <form method="POST" use:enhance>
   <input name="new_name" type="text" placeholder="add new todo" bind:this={new_todo_name} />
+  <select name="reset">
+    {#each data.resets as reset}
+      <option value={reset.name}>{reset.name}</option>
+    {/each}
+  </select>
   <button formaction="?/new_todo">add</button>
 </form>
