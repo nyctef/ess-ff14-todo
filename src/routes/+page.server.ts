@@ -1,14 +1,13 @@
 import type { PageServerLoad, Actions } from './$types';
 
-// https://kit.svelte.dev/docs/state-management#avoid-shared-state-on-the-server
-// explains why this is a bad idea, but we're just playing around for now:
-
 type Reset = { name: string; interval: 'daily' | 'weekly'; hourOffset: number };
 
 const resets = [
+  // TODO: doublecheck these times (which ones are affected by DST, if any?)
   { name: 'Weekly reset', interval: 'weekly', hourOffset: 24 + 8 },
   { name: 'Duty reset', interval: 'daily', hourOffset: 15 },
-  { name: 'GC Supply reset', interval: 'daily', hourOffset: 20 }
+  { name: 'GC Supply reset', interval: 'daily', hourOffset: 20 },
+  { name: 'Jumbo Cactpot reset', interval: 'weekly', hourOffset: 5 * 24 + 20 }
 ] as const;
 
 type Todo = { text: string; lastDone: Date | undefined; reset: Reset };
@@ -17,6 +16,9 @@ const todos_data: Todo[] = [
   { text: 'Arkasodara dailies', lastDone: undefined, reset: resets[1] },
   { text: 'Omicron dailies', lastDone: undefined, reset: resets[1] }
 ];
+
+// https://kit.svelte.dev/docs/state-management#avoid-shared-state-on-the-server
+// explains why this is a bad idea, but we're just playing around for now:
 let todos = todos_data;
 
 export const load: PageServerLoad = () => {
