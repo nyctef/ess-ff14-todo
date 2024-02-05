@@ -1,18 +1,44 @@
 <script lang="ts">
   import type { SvelteComponent } from 'svelte';
+  import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import { writable } from 'svelte/store';
   import { enhance } from '$app/forms';
 
   export let data: PageData;
   let new_todo_name: HTMLInputElement;
+
+  // based on the clock example on svelte.dev:
+  let time = new Date();
+
+  onMount(() => {
+    // force our component to reevaluate once per second:
+    const interval = setInterval(() => {
+      time = new Date();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  });
+
+  function handleTodoChange(text: string, checked: boolean) {
+    let body = new FormData();
+    body.append('text', text);
+    let endpoint = checked ? '?/todo_check' : '?/todo_uncheck';
+    fetch(endpoint, { method: 'POST', body });
+  }
 </script>
 
 <h1>event-sourced svelte ff14 todo</h1>
 <ul>
   {#each data.todos as todo}
     <li>
-      <input type="checkbox" bind:checked={todo.done} />
+      <input
+        type="checkbox"
+        checked={todo.lastDone != undefined && todo.lastDone <= time}
+        on:change={(e) => handleTodoChange(todo.text, e.currentTarget.checked)}
+      />
       {todo.text}
     </li>
   {/each}
