@@ -2,6 +2,7 @@
   import type { SvelteComponent } from 'svelte';
   import type { PageData } from './$types';
   import { writable } from 'svelte/store';
+  import { enhance } from '$app/forms';
 
   export let data: PageData;
   let new_todo_name: HTMLInputElement;
@@ -17,10 +18,7 @@
   {/each}
 </ul>
 
-<input type="text" placeholder="add new todo" bind:this={new_todo_name} />
-<button
-  on:click={() => {
-    data.todos = [...data.todos, { text: new_todo_name.value, done: false }];
-    new_todo_name.value = '';
-  }}>add</button
->
+<form method="POST" use:enhance>
+  <input name="new_name" type="text" placeholder="add new todo" bind:this={new_todo_name} />
+  <button formaction="?/new_todo">add</button>
+</form>

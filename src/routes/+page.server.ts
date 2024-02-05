@@ -14,7 +14,7 @@ export const load: PageServerLoad = () => {
 };
 
 export const actions = {
-  default: async ({ request }) => {
+  new_todo: async ({ request }) => {
     const data = await request.formData();
 
     todos = [...todos, { text: data.get('new_name')!.toString(), done: false }];
