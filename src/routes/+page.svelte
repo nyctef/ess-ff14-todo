@@ -1,9 +1,8 @@
 <script lang="ts">
-  import type { SvelteComponent } from 'svelte';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
-  import { writable } from 'svelte/store';
   import { enhance } from '$app/forms';
+  import { dateDiff, nextReset } from '$lib/resetUtils';
 
   export let data: PageData;
   let new_todo_name: HTMLInputElement;
@@ -12,10 +11,10 @@
   let time = new Date();
 
   onMount(() => {
-    // force our component to reevaluate once per second:
+    // force our component to reevaluate once per minute:
     const interval = setInterval(() => {
       time = new Date();
-    }, 1000);
+    }, 60 * 1000);
 
     return () => {
       clearInterval(interval);
@@ -40,6 +39,7 @@
         on:change={(e) => handleTodoChange(todo.text, e.currentTarget.checked)}
       />
       {todo.text}
+      {dateDiff(time, nextReset(todo.reset, time))}
     </li>
   {/each}
 </ul>
