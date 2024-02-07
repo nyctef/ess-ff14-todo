@@ -84,5 +84,36 @@ export function prevReset(reset: Reset, currentTime: Date): Date {
   }
 }
 
-const internals = { floorDay, floorWeek };
+/** Difference between two dates for displaying in the UI.
+ Positive if `to` is later than `from`.
+
+ Doesn't take into account timezones, DST, leap seconds etc
+ so may give the wrong answer in some edge cases.
+
+ We're probably assuming all the incoming dates are UTC
+ so hopefully this isn't too much of an issue.
+ */
+export function dateDiff(from: Date, to: Date): string {
+  let msDiff = to.getTime() - from.getTime();
+  let sign = '';
+  if (msDiff < 0) {
+    sign = '-';
+    msDiff = -msDiff;
+  }
+  // const seconds = Math.floor(msDiff / 1000) % 60;
+  const minutes = Math.floor(msDiff / 1000 / 60) % 60;
+  const hours = Math.floor(msDiff / 1000 / 60 / 60) % 24;
+  const days = Math.floor(msDiff / 1000 / 60 / 60 / 24);
+
+  const pad = (x: number) => String(x).padStart(2, '0');
+  if (days > 0) {
+    return `${sign}${pad(days)}d ${pad(hours)}h`;
+  } else {
+    return `${sign}${pad(hours)}h ${pad(minutes)}m`;
+  }
+  // we probably don't need sub-minute precision since
+  // if that matters for this use case it's probably too late anyway
+}
+
+const internals = { floorDay, floorWeek, dateDiff };
 export { internals };

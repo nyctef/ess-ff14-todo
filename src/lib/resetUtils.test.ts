@@ -1,6 +1,6 @@
 import { internals, prevReset, nextReset } from './resetUtils';
 import { describe, it, test, expect } from 'vitest';
-const { floorDay, floorWeek } = internals;
+const { floorDay, floorWeek, dateDiff } = internals;
 
 describe('floorWeek', () => {
   it('returns the start of a week in the middle of a month', () => {
@@ -93,5 +93,27 @@ describe('prevReset can return the previous reset', () => {
     const reset = { name: 'test reset', interval: 'weekly', hourOffset: 24 + 12 } as const;
     const result = prevReset(reset, currentTime);
     expect(result).toEqual(new Date("2024-02-06T12:00:00Z"));
+  });
+});
+
+describe('dateDiff', () => {
+  it('returns a hours+minutes string for dates which are less than a day apart', () => {
+    const from = new Date("2024-02-23T00:00:00Z");
+    const to = new Date("2024-02-23T01:23:00Z");
+    const result = dateDiff(from, to);
+    expect(result).toEqual('01h 23m');
+  });
+  it('returns a days+hours string for dates which are more than a day apart', () => {
+    const from = new Date("2024-02-23T00:00:00Z");
+    const to = new Date("2024-02-25T01:23:00Z");
+    const result = dateDiff(from, to);
+    expect(result).toEqual('02d 01h');
+  });
+  it('returns a negative string if `from` and `to` are flipped', () => {
+    // not sure if this is necessary, but might as well ensure this function does a useful thing
+    const from = new Date("2024-02-25T01:23:00Z");
+    const to = new Date("2024-02-23T00:00:00Z");
+    const result = dateDiff(from, to);
+    expect(result).toEqual('-02d 01h');
   });
 });
