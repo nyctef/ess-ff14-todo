@@ -18,6 +18,18 @@ function floorWeek(date: Date): Date {
   return floorDay(result);
 }
 
+function addDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  result.setDate(result.getDate() + days);
+  return result;
+}
+
+function addHours(date: Date, hours: number): Date {
+  const result = new Date(date);
+  result.setHours(result.getHours() + hours);
+  return result;
+}
+
 /** Imagine a timeline like the following:
 
     --|----R----|----R----|
@@ -35,7 +47,41 @@ export function nextReset(reset: Reset, currentTime: Date): Date {
   const startOfCurrentInterval =
     reset.interval == 'weekly' ? floorWeek(currentTime) : floorDay(currentTime);
 
-  // TODO
+  const startOfNextInterval = reset.interval === 'weekly' ? addDays(startOfCurrentInterval, 7) : addDays(startOfCurrentInterval, 1);
+
+  const resetInCurrentInterval = addHours(startOfCurrentInterval, reset.hourOffset);
+
+  const resetInNextInterval = addHours(startOfNextInterval, reset.hourOffset);
+
+  if (currentTime < resetInCurrentInterval) {
+    return resetInCurrentInterval;
+  } else {
+    return resetInNextInterval;
+  }
+}
+
+/** same as `nextReset`, but with this timeline instead:
+
+    --|----R----|----R----|
+    --            ^a   ^b
+
+and searching backwards instead of forwards.
+ */
+export function prevReset(reset: Reset, currentTime: Date): Date {
+  const startOfCurrentInterval =
+    reset.interval == 'weekly' ? floorWeek(currentTime) : floorDay(currentTime);
+
+  const startOfPrevInterval = reset.interval === 'weekly' ? addDays(startOfCurrentInterval, -7) : addDays(startOfCurrentInterval, -1);
+
+  const resetInCurrentInterval = addHours(startOfCurrentInterval, reset.hourOffset);
+
+  const resetInPrevInterval = addHours(startOfPrevInterval, reset.hourOffset);
+
+  if (currentTime > resetInCurrentInterval) {
+    return resetInCurrentInterval;
+  } else {
+    return resetInPrevInterval;
+  }
 }
 
 const internals = { floorDay, floorWeek };

@@ -1,5 +1,5 @@
-import { internals } from './resetUtils';
-import { describe, it, expect } from 'vitest';
+import { internals, prevReset, nextReset } from './resetUtils';
+import { describe, it, test, expect } from 'vitest';
 const { floorDay, floorWeek } = internals;
 
 describe('floorWeek', () => {
@@ -31,5 +31,67 @@ describe('floorDay', () => {
 
     // just removes all of the hour/min/second parts
     expect(result).toEqual(new Date("2024-02-23T00:00:00Z"));
+  });
+});
+
+describe('nextReset can return the next reset', () => {
+  test('if the reset is later today', () => {
+    // if now is midday and the reset is at 1pm, we should return 1pm today
+    const currentTime = new Date("2024-02-23T12:00:00Z");
+    const reset = { name: 'test reset', interval: 'daily', hourOffset: 13 } as const;
+    const result = nextReset(reset, currentTime);
+    expect(result).toEqual(new Date("2024-02-23T13:00:00Z"));
+  });
+  test('if the reset is tomorrow', () => {
+    // if now is midday and the reset is at 11am, we should return 11am tomorrow
+    const currentTime = new Date("2024-02-23T12:00:00Z");
+    const reset = { name: 'test reset', interval: 'daily', hourOffset: 11 } as const;
+    const result = nextReset(reset, currentTime);
+    expect(result).toEqual(new Date("2024-02-24T11:00:00Z"));
+  });
+  test('if the reset is later this week', () => {
+    // if now is midday Monday and the reset is midday Tuesday, we should return this week's Tuesday
+    const currentTime = new Date("2024-02-05T12:00:00Z");
+    const reset = { name: 'test reset', interval: 'weekly', hourOffset: 24 + 12 } as const;
+    const result = nextReset(reset, currentTime);
+    expect(result).toEqual(new Date("2024-02-06T12:00:00Z"));
+  });
+  test('if the reset is next week', () => {
+    // if now is midday Tuesday and the reset is midday Monday, we should return next week's Monday
+    const currentTime = new Date("2024-02-06T12:00:00Z");
+    const reset = { name: 'test reset', interval: 'weekly', hourOffset: 0 + 12 } as const;
+    const result = nextReset(reset, currentTime);
+    expect(result).toEqual(new Date("2024-02-12T12:00:00Z"));
+  });
+});
+
+describe('prevReset can return the previous reset', () => {
+  test('if the reset was earlier today', () => {
+    // if now is midday and the reset is at 11am, we should return 11am today
+    const currentTime = new Date("2024-02-23T12:00:00Z");
+    const reset = { name: 'test reset', interval: 'daily', hourOffset: 11 } as const;
+    const result = prevReset(reset, currentTime);
+    expect(result).toEqual(new Date("2024-02-23T11:00:00Z"));
+  });
+  test('if the reset was yesterday', () => {
+    // if now is midday and the reset is at 1pm, we should return 1pm yesterday
+    const currentTime = new Date("2024-02-23T12:00:00Z");
+    const reset = { name: 'test reset', interval: 'daily', hourOffset: 13 } as const;
+    const result = prevReset(reset, currentTime);
+    expect(result).toEqual(new Date("2024-02-22T13:00:00Z"));
+  });
+  test('if the reset was earlier this week', () => {
+    // if now is midday Tuesday and the reset is midday Monday, we should return this week's Monday
+    const currentTime = new Date("2024-02-06T12:00:00Z");
+    const reset = { name: 'test reset', interval: 'weekly', hourOffset: 0 + 12 } as const;
+    const result = prevReset(reset, currentTime);
+    expect(result).toEqual(new Date("2024-02-05T12:00:00Z"));
+  });
+  test('if the reset was last week', () => {
+    // if now is midday Monday and the reset is midday Tuesday, we should return last week's Tuesday
+    const currentTime = new Date("2024-02-12T12:00:00Z");
+    const reset = { name: 'test reset', interval: 'weekly', hourOffset: 24 + 12 } as const;
+    const result = prevReset(reset, currentTime);
+    expect(result).toEqual(new Date("2024-02-06T12:00:00Z"));
   });
 });
