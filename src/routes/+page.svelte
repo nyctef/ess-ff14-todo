@@ -5,7 +5,6 @@
   import { dateDiff, nextReset, prevReset } from '$lib/resetUtils';
 
   export let data: PageData;
-  let new_todo_name: HTMLInputElement;
 
   // based on the clock example on svelte.dev:
   let time = new Date();
@@ -45,7 +44,7 @@
 </ul>
 
 <form method="POST" use:enhance>
-  <input name="new_name" type="text" placeholder="add new todo" bind:this={new_todo_name} />
+  <input name="new_name" type="text" placeholder="add new todo" />
   <select name="reset">
     {#each data.resets as reset}
       <option value={reset.name}>{reset.name}</option>
