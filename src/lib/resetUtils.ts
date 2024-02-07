@@ -1,13 +1,21 @@
 import type { Reset } from './types';
 
+/** Get a time near 00:01 on the current day */
 function floorDay(date: Date): Date {
   const result = new Date(date);
   result.setHours(0, 0, 0, 0);
   return result;
 }
 
+/** Get a time near 00:01 the previous Monday */
 function floorWeek(date: Date): Date {
-  // TODO
+  const result = new Date(date);
+  // .getDay() returns the day of the week (zero-indexed on Sunday)
+  // so we add 1 to make it zero-indexed on Monday.
+  // .setDate() is kind to us and does a useful thing even if the
+  // resulting day-of-month is negative.
+  result.setDate(result.getDate() - result.getDay() + 1);
+  return floorDay(result);
 }
 
 /** Imagine a timeline like the following:
@@ -29,3 +37,6 @@ export function nextReset(reset: Reset, currentTime: Date): Date {
 
   // TODO
 }
+
+const internals = { floorDay, floorWeek };
+export { internals };
