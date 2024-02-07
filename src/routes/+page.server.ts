@@ -1,16 +1,13 @@
+import type { Reset, Todo } from '$lib/types';
 import type { PageServerLoad, Actions } from './$types';
 
-type Reset = { name: string; interval: 'daily' | 'weekly'; hourOffset: number };
-
-const resets = [
+const resets: Reset[] = [
   // TODO: doublecheck these times (which ones are affected by DST, if any?)
   { name: 'Weekly reset', interval: 'weekly', hourOffset: 24 + 8 },
   { name: 'Duty reset', interval: 'daily', hourOffset: 15 },
   { name: 'GC Supply reset', interval: 'daily', hourOffset: 20 },
   { name: 'Jumbo Cactpot reset', interval: 'weekly', hourOffset: 5 * 24 + 20 }
-] as const;
-
-type Todo = { text: string; lastDone: Date | undefined; reset: Reset };
+];
 
 const todos_data: Todo[] = [
   { text: 'Arkasodara dailies', lastDone: undefined, reset: resets[1] },
