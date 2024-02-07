@@ -34,7 +34,7 @@
     <li>
       <input
         type="checkbox"
-        checked={todo.lastDone != undefined && todo.lastDone <= prevReset(todo.reset, time)}
+        checked={todo.lastDone != undefined && todo.lastDone >= prevReset(todo.reset, time)}
         on:change={(e) => handleTodoChange(todo.text, e.currentTarget.checked)}
       />
       {todo.text}
