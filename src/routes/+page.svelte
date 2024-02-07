@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import { enhance } from '$app/forms';
-  import { dateDiff, nextReset } from '$lib/resetUtils';
+  import { dateDiff, nextReset, prevReset } from '$lib/resetUtils';
 
   export let data: PageData;
   let new_todo_name: HTMLInputElement;
@@ -35,7 +35,7 @@
     <li>
       <input
         type="checkbox"
-        checked={todo.lastDone != undefined && todo.lastDone <= time}
+        checked={todo.lastDone != undefined && todo.lastDone <= prevReset(todo.reset, time)}
         on:change={(e) => handleTodoChange(todo.text, e.currentTarget.checked)}
       />
       {todo.text}
