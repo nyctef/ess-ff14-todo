@@ -1,4 +1,5 @@
-import type { Reset, Todo } from '$lib/types';
+import { InMemoryApi } from '$lib/in_memory_api';
+import type { Reset } from '$lib/types';
 import type { PageServerLoad, Actions } from './$types';
 
 const resets: Reset[] = [
@@ -9,17 +10,14 @@ const resets: Reset[] = [
   { name: 'Jumbo Cactpot reset', interval: 'weekly', hourOffset: 5 * 24 + 20 }
 ];
 
-const todos_data: Todo[] = [
-  { text: 'Arkasodara dailies', lastDone: undefined, reset: resets[1] },
-  { text: 'Omicron dailies', lastDone: undefined, reset: resets[1] }
-];
-
 // https://kit.svelte.dev/docs/state-management#avoid-shared-state-on-the-server
 // explains why this is a bad idea, but we're just playing around for now:
-let todos = todos_data;
+const api = new InMemoryApi();
+api.add_new_todo({ text: 'Arkasodara dailies', lastDone: undefined, reset: resets[1] });
+api.add_new_todo({ text: 'Omicron dailies', lastDone: undefined, reset: resets[1] });
 
-export const load: PageServerLoad = () => {
-  return { todos, resets };
+export const load: PageServerLoad = async () => {
+  return { todos: await api.get_current_todos(), resets };
 };
 
 export const actions = {
@@ -31,17 +29,20 @@ export const actions = {
     const reset = resets.find((r) => r.name == reset_name)!;
     // TODO: check for duplicate names
 
-    todos = [...todos, { text, lastDone: undefined, reset }];
+    api.add_new_todo({
+      text,
+      lastDone: undefined,
+      reset
+    });
   },
   todo_check: async ({ request }) => {
     const data = await request.formData();
     const text = data.get('text')!.toString();
-    const now = new Date();
-    todos = todos.map((t) => (t.text == text ? { ...t, lastDone: now } : t));
+    api.check_todo(text);
   },
   todo_uncheck: async ({ request }) => {
     const data = await request.formData();
     const text = data.get('text')!.toString();
-    todos = todos.map((t) => (t.text == text ? { ...t, lastDone: undefined } : t));
+    api.uncheck_todo(text);
   }
 } satisfies Actions;
