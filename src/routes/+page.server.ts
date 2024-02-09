@@ -6,8 +6,6 @@ import type { PageServerLoad, Actions } from './$types';
 const storage = await PostgresEventStorage.create_from_env();
 
 const api = await EventSourcedApi.create(storage);
-api.add_new_todo({ text: 'Arkasodara dailies', lastDone: undefined, reset: resets[1] });
-api.add_new_todo({ text: 'Omicron dailies', lastDone: undefined, reset: resets[1] });
 
 export const load: PageServerLoad = async () => {
   return { todos: await api.get_current_todos(), resets };
