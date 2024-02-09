@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import { enhance } from '$app/forms';
-  import { dateDiff, nextReset, prevReset } from '$lib/resetUtils';
+  import { dateDiff, nextReset, prevReset } from '$lib/reset_utils';
 
   export let data: PageData;
 

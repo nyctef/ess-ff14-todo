@@ -1,4 +1,4 @@
-import { internals, prevReset, nextReset } from './resetUtils';
+import { internals, prevReset, nextReset } from './reset_utils';
 import { describe, it, test, expect } from 'vitest';
 const { floorDay, floorWeek, dateDiff } = internals;
 
