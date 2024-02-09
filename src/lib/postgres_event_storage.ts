@@ -1,4 +1,4 @@
-import { Client } from 'pg';
+import pg from 'pg';
 
 /*
 
@@ -11,10 +11,10 @@ CREATE TABLE events(
 */
 
 export class PostgresEventStorage implements EventStorage {
-  constructor(private client: Client) {}
+  constructor(private client: pg.Client) {}
 
   static async create_from_env(): Promise<PostgresEventStorage> {
-    const client = new Client(process.env.FF14_TODO_PG_CONNECTION_STRING);
+    const client = new pg.Client(process.env.FF14_TODO_PG_CONNECTION_STRING);
     await client.connect();
     return new PostgresEventStorage(client);
   }
