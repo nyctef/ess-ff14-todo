@@ -20,7 +20,7 @@ export class PostgresEventStorage implements EventStorage {
   }
 
   async store_event(event: TodoEvent): Promise<void> {
-    await this.client.query('INSERT INTO events (type, data) VALUES ($1, $2)', [event.type, event]);
+    await this.client.query('INSERT INTO events (data) VALUES ($1)', [event]);
   }
   async get_events(): Promise<TodoEvent[]> {
     const result = await this.client.query('SELECT data FROM events');
