@@ -1,18 +1,13 @@
-import { InMemoryApi } from '$lib/in_memory_api';
-import type { Reset } from '$lib/types';
+import { EventSourcedApi } from '$lib/event_sourced_api';
+import { InMemoryEventStorage } from '$lib/in_memory_event_storage';
+import { resets } from '$lib/static_data';
 import type { PageServerLoad, Actions } from './$types';
-
-const resets: Reset[] = [
-  // TODO: doublecheck these times (which ones are affected by DST, if any?)
-  { name: 'Weekly reset', interval: 'weekly', hourOffset: 24 + 8 },
-  { name: 'Duty reset', interval: 'daily', hourOffset: 15 },
-  { name: 'GC Supply reset', interval: 'daily', hourOffset: 20 },
-  { name: 'Jumbo Cactpot reset', interval: 'weekly', hourOffset: 5 * 24 + 20 }
-];
 
 // https://kit.svelte.dev/docs/state-management#avoid-shared-state-on-the-server
 // explains why this is a bad idea, but we're just playing around for now:
-const api = new InMemoryApi();
+const storage = new InMemoryEventStorage();
+
+const api = await EventSourcedApi.create(storage);
 api.add_new_todo({ text: 'Arkasodara dailies', lastDone: undefined, reset: resets[1] });
 api.add_new_todo({ text: 'Omicron dailies', lastDone: undefined, reset: resets[1] });
 
