@@ -47,7 +47,10 @@ export function nextReset(reset: Reset, currentTime: Date): Date {
   const startOfCurrentInterval =
     reset.interval == 'weekly' ? floorWeek(currentTime) : floorDay(currentTime);
 
-  const startOfNextInterval = reset.interval === 'weekly' ? addDays(startOfCurrentInterval, 7) : addDays(startOfCurrentInterval, 1);
+  const startOfNextInterval =
+    reset.interval === 'weekly'
+      ? addDays(startOfCurrentInterval, 7)
+      : addDays(startOfCurrentInterval, 1);
 
   const resetInCurrentInterval = addHours(startOfCurrentInterval, reset.hourOffset);
 
@@ -71,7 +74,10 @@ export function prevReset(reset: Reset, currentTime: Date): Date {
   const startOfCurrentInterval =
     reset.interval == 'weekly' ? floorWeek(currentTime) : floorDay(currentTime);
 
-  const startOfPrevInterval = reset.interval === 'weekly' ? addDays(startOfCurrentInterval, -7) : addDays(startOfCurrentInterval, -1);
+  const startOfPrevInterval =
+    reset.interval === 'weekly'
+      ? addDays(startOfCurrentInterval, -7)
+      : addDays(startOfCurrentInterval, -1);
 
   const resetInCurrentInterval = addHours(startOfCurrentInterval, reset.hourOffset);
 
