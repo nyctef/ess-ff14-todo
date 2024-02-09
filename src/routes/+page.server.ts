@@ -20,7 +20,7 @@ export const actions = {
     const reset = resets.find((r) => r.name == reset_name)!;
     // TODO: check for duplicate names
 
-    api.add_new_todo({
+    await api.add_new_todo({
       text,
       lastDone: undefined,
       reset
@@ -29,11 +29,11 @@ export const actions = {
   todo_check: async ({ request }) => {
     const data = await request.formData();
     const text = data.get('text')!.toString();
-    api.check_todo(text);
+    await api.check_todo(text);
   },
   todo_uncheck: async ({ request }) => {
     const data = await request.formData();
     const text = data.get('text')!.toString();
-    api.uncheck_todo(text);
+    await api.uncheck_todo(text);
   }
 } satisfies Actions;

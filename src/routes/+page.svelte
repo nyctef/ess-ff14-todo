@@ -43,12 +43,12 @@
   {/each}
 </ul>
 
-<form method="POST" use:enhance>
+<form method="POST" action="?/new_todo" use:enhance>
   <input name="new_name" type="text" placeholder="add new todo" />
   <select name="reset">
     {#each data.resets as reset}
       <option value={reset.name}>{reset.name}</option>
     {/each}
   </select>
-  <button formaction="?/new_todo">add</button>
+  <button type="submit">add</button>
 </form>
