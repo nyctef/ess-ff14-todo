@@ -14,8 +14,14 @@ export class PostgresEventStorage implements EventStorage {
   constructor(private client: pg.Client) {}
 
   static async create_from_env(): Promise<PostgresEventStorage> {
-    const client = new pg.Client(process.env.FF14_TODO_PG_CONNECTION_STRING);
+    const connectionString = process.env.FF14_TODO_PG_CONNECTION_STRING;
+    if (!connectionString) {
+      throw new Error('FF14_TODO_PG_CONNECTION_STRING not set');
+    }
+
+    const client = new pg.Client(connectionString);
     await client.connect();
+
     return new PostgresEventStorage(client);
   }
 
