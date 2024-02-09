@@ -10,7 +10,7 @@ CREATE TABLE events(
 
 */
 
-class PostgresEventStorage implements EventStorage {
+export class PostgresEventStorage implements EventStorage {
   constructor(private client: Client) {}
 
   static async create_from_env(): Promise<PostgresEventStorage> {

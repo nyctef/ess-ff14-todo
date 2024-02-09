@@ -1,11 +1,9 @@
 import { EventSourcedApi } from '$lib/event_sourced_api';
-import { InMemoryEventStorage } from '$lib/in_memory_event_storage';
+import { PostgresEventStorage } from '$lib/postgres_event_storage';
 import { resets } from '$lib/static_data';
 import type { PageServerLoad, Actions } from './$types';
 
-// https://kit.svelte.dev/docs/state-management#avoid-shared-state-on-the-server
-// explains why this is a bad idea, but we're just playing around for now:
-const storage = new InMemoryEventStorage();
+const storage = await PostgresEventStorage.create_from_env();
 
 const api = await EventSourcedApi.create(storage);
 api.add_new_todo({ text: 'Arkasodara dailies', lastDone: undefined, reset: resets[1] });
