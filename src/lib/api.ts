@@ -11,4 +11,5 @@ export interface Api {
   check_todo(todo_name: string): Promise<void>;
   uncheck_todo(todo_name: string): Promise<void>;
   remove_todo(todo_name: string): Promise<void>;
+  rename_todo(old_text: string, new_text: string): Promise<void>;
 }

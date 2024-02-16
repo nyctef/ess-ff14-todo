@@ -2,8 +2,6 @@
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import { enhance } from '$app/forms';
-  import { dateDiff, nextReset, prevReset } from '$lib/reset_utils';
-  import Checkbox from './todo_checkbox.svelte';
   import TodoCheckbox from './todo_checkbox.svelte';
 
   export let data: PageData;
@@ -28,13 +26,20 @@
     let endpoint = checked ? '?/todo_check' : '?/todo_uncheck';
     fetch(endpoint, { method: 'POST', body });
   }
+
+  function handleRename(oldText: string, newText: string) {
+    let body = new FormData();
+    body.append('old_text', oldText);
+    body.append('new_text', newText);
+    fetch('?/todo_rename', { method: 'POST', body });
+  }
 </script>
 
 <h1>event-sourced svelte ff14 todo</h1>
 <ul>
   {#each data.todos as todo}
     <li>
-      <TodoCheckbox {todo} {time} {handleTodoChange} />
+      <TodoCheckbox {todo} {time} {handleTodoChange} {handleRename} />
     </li>
   {/each}
 </ul>

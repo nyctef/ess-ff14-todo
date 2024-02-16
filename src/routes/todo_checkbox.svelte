@@ -5,6 +5,15 @@
   export let todo: Todo;
   export let time: Date;
   export let handleTodoChange: (text: string, checked: boolean) => void;
+  export let handleRename: (oldText: string, newText: string) => void;
+
+  function doRename() {
+    const oldText = todo.text;
+    let newText = prompt('Rename todo:', oldText);
+    if (newText != null) {
+      handleRename(oldText, newText);
+    }
+  }
 </script>
 
 <label>
@@ -15,4 +24,5 @@
   />
   {todo.text}
   {dateDiff(time, nextReset(todo.reset, time))}
+  <button title="Rename todo" on:click={doRename}>🖉</button>
 </label>

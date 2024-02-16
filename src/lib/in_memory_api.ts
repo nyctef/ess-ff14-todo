@@ -27,4 +27,10 @@ export class InMemoryApi implements Api {
     this.todos_data = this.todos_data.filter((t) => t.text != todo_name);
     return Promise.resolve();
   }
+  rename_todo(old_text: string, new_text: string): Promise<void> {
+    this.todos_data = this.todos_data.map((t) =>
+      t.text == old_text ? { ...t, text: new_text } : t
+    );
+    return Promise.resolve();
+  }
 }

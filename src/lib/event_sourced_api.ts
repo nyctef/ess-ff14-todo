@@ -42,6 +42,11 @@ export class EventSourcedApi implements Api {
       case 'todo_removed':
         this.todos_data = this.todos_data.filter((t) => t.text != event.text);
         break;
+      case 'todo_renamed':
+        this.todos_data = this.todos_data.map((t) =>
+          t.text == event.old_text ? { ...t, text: event.new_text } : t
+        );
+        break;
       default:
         throw Error(`Unknown event type: ${(event as any).type}`);
     }
@@ -72,6 +77,11 @@ export class EventSourcedApi implements Api {
   }
   async remove_todo(todo_name: string): Promise<void> {
     const event = { type: 'todo_removed', text: todo_name, timestamp: new Date() } as const;
+    await this.storage.store_event(event);
+    this.#process_event(event);
+  }
+  async rename_todo(old_text: string, new_text: string): Promise<void> {
+    const event = { type: 'todo_renamed', old_text, new_text, timestamp: new Date() } as const;
     await this.storage.store_event(event);
     this.#process_event(event);
   }
