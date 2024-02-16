@@ -3,6 +3,7 @@
   import type { PageData } from './$types';
   import { enhance } from '$app/forms';
   import TodoCheckbox from './todo_checkbox.svelte';
+  import { invalidate, invalidateAll } from '$app/navigation';
 
   export let data: PageData;
 
@@ -20,18 +21,20 @@
     };
   });
 
-  function handleTodoChange(text: string, checked: boolean) {
+  async function handleTodoChange(text: string, checked: boolean) {
     let body = new FormData();
     body.append('text', text);
     let endpoint = checked ? '?/todo_check' : '?/todo_uncheck';
-    fetch(endpoint, { method: 'POST', body });
+    await fetch(endpoint, { method: 'POST', body });
+    await invalidateAll();
   }
 
-  function handleRename(oldText: string, newText: string) {
+  async function handleRename(oldText: string, newText: string) {
     let body = new FormData();
     body.append('old_text', oldText);
     body.append('new_text', newText);
-    fetch('?/todo_rename', { method: 'POST', body });
+    await fetch('?/todo_rename', { method: 'POST', body });
+    await invalidateAll();
   }
 </script>
 
