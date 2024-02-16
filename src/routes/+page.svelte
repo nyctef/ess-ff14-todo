@@ -32,13 +32,15 @@
 <ul>
   {#each data.todos as todo}
     <li>
-      <input
-        type="checkbox"
-        checked={todo.lastDone != undefined && todo.lastDone >= prevReset(todo.reset, time)}
-        on:change={(e) => handleTodoChange(todo.text, e.currentTarget.checked)}
-      />
-      {todo.text}
-      {dateDiff(time, nextReset(todo.reset, time))}
+      <label>
+        <input
+          type="checkbox"
+          checked={todo.lastDone != undefined && todo.lastDone >= prevReset(todo.reset, time)}
+          on:change={(e) => handleTodoChange(todo.text, e.currentTarget.checked)}
+        />
+        {todo.text}
+        {dateDiff(time, nextReset(todo.reset, time))}
+      </label>
     </li>
   {/each}
 </ul>
