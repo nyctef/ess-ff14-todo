@@ -3,6 +3,8 @@
   import type { PageData } from './$types';
   import { enhance } from '$app/forms';
   import { dateDiff, nextReset, prevReset } from '$lib/reset_utils';
+  import Checkbox from './todo_checkbox.svelte';
+  import TodoCheckbox from './todo_checkbox.svelte';
 
   export let data: PageData;
 
@@ -32,15 +34,7 @@
 <ul>
   {#each data.todos as todo}
     <li>
-      <label>
-        <input
-          type="checkbox"
-          checked={todo.lastDone != undefined && todo.lastDone >= prevReset(todo.reset, time)}
-          on:change={(e) => handleTodoChange(todo.text, e.currentTarget.checked)}
-        />
-        {todo.text}
-        {dateDiff(time, nextReset(todo.reset, time))}
-      </label>
+      <TodoCheckbox {todo} {time} {handleTodoChange} />
     </li>
   {/each}
 </ul>
