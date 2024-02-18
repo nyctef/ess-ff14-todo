@@ -36,13 +36,20 @@
     await fetch('?/todo_rename', { method: 'POST', body });
     await invalidateAll();
   }
+
+  async function handleRemove(text: string) {
+    let body = new FormData();
+    body.append('text', text);
+    await fetch('?/todo_remove', { method: 'POST', body });
+    await invalidateAll();
+  }
 </script>
 
 <h1>event-sourced svelte ff14 todo</h1>
 <ul>
   {#each data.todos as todo}
     <li>
-      <TodoCheckbox {todo} {time} {handleTodoChange} {handleRename} />
+      <TodoCheckbox {todo} {time} {handleTodoChange} {handleRename} {handleRemove} />
     </li>
   {/each}
 </ul>

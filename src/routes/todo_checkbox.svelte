@@ -6,12 +6,19 @@
   export let time: Date;
   export let handleTodoChange: (text: string, checked: boolean) => void;
   export let handleRename: (oldText: string, newText: string) => void;
+  export let handleRemove: (text: string) => void;
 
   function doRename() {
     const oldText = todo.text;
     let newText = prompt('Rename todo:', oldText);
     if (newText != null) {
       handleRename(oldText, newText);
+    }
+  }
+
+  function doRemove() {
+    if (confirm(`Remove todo"${todo.text}"?`)) {
+      handleRemove(todo.text);
     }
   }
 </script>
@@ -25,4 +32,5 @@
   {todo.text}
   {dateDiff(time, nextReset(todo.reset, time))}
   <button title="Rename todo" on:click={doRename}>🖉</button>
+  <button title="Remove todo" on:click={doRemove}>🗑</button>
 </label>

@@ -41,5 +41,10 @@ export const actions = {
     const old_text = data.get('old_text')!.toString();
     const new_text = data.get('new_text')!.toString();
     await api.rename_todo(old_text, new_text);
+  },
+  todo_remove: async ({ request }) => {
+    const data = await request.formData();
+    const text = data.get('text')!.toString();
+    await api.remove_todo(text);
   }
 } satisfies Actions;
