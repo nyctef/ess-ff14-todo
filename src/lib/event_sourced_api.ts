@@ -12,11 +12,13 @@ export class EventSourcedApi implements Api {
   }
 
   static async create(storage: EventStorage): Promise<EventSourcedApi> {
+    const start = performance.now();
     const events = await storage.get_events();
     const impl = new EventSourcedApi([], storage);
     for (const event of events) {
       impl.#process_event(event);
     }
+    console.log(`Loaded ${events.length} events in ${(performance.now() - start).toFixed(2)}ms`);
     return impl;
   }
 
