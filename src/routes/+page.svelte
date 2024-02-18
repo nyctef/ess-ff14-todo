@@ -1,9 +1,11 @@
 <script lang="ts">
+  import type { Todo } from '$lib/types';
   import { onMount } from 'svelte';
   import type { PageData } from './$types';
   import { enhance } from '$app/forms';
   import TodoCheckbox from './todo_checkbox.svelte';
   import { invalidate, invalidateAll } from '$app/navigation';
+  import { is_done, millis_remaining } from '$lib/reset_utils';
 
   export let data: PageData;
 
@@ -43,11 +45,19 @@
     await fetch('?/todo_remove', { method: 'POST', body });
     await invalidateAll();
   }
+
+  function sort_key(a: Todo) {
+    return [is_done(a, time), millis_remaining(a, time), a.text];
+  }
+
+  $: sorted_todos = data.todos.toSorted((a, b) => {
+    return sort_key(a) < sort_key(b) ? -1 : 1;
+  });
 </script>
 
 <h1>event-sourced svelte ff14 todo</h1>
 <ul>
-  {#each data.todos as todo}
+  {#each sorted_todos as todo (todo.text)}
     <li>
       <TodoCheckbox {todo} {time} {handleTodoChange} {handleRename} {handleRemove} />
     </li>

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { dateDiff, nextReset, prevReset } from '$lib/reset_utils';
+  import { dateDiff, is_done, nextReset, prevReset } from '$lib/reset_utils';
   import type { Todo } from '$lib/types';
 
   export let todo: Todo;
@@ -26,7 +26,7 @@
 <label>
   <input
     type="checkbox"
-    checked={todo.lastDone != undefined && new Date(todo.lastDone) >= prevReset(todo.reset, time)}
+    checked={is_done(todo, time)}
     on:change={(e) => handleTodoChange(todo.text, e.currentTarget.checked)}
   />
   {todo.text}

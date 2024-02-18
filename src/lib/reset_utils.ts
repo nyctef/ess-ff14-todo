@@ -1,4 +1,4 @@
-import type { Reset } from './types';
+import type { Reset, Todo } from './types';
 
 /** Get a time near 00:01 on the current day */
 function floorDay(date: Date): Date {
@@ -119,6 +119,14 @@ export function dateDiff(from: Date, to: Date): string {
   }
   // we probably don't need sub-minute precision since
   // if that matters for this use case it's probably too late anyway
+}
+
+export function millis_remaining(todo: Todo, time: Date): number {
+  return nextReset(todo.reset, time).getTime() - time.getTime();
+}
+
+export function is_done(todo: Todo, time: Date) {
+  return todo.lastDone != undefined && new Date(todo.lastDone) >= prevReset(todo.reset, time);
 }
 
 const internals = { floorDay, floorWeek, dateDiff };
