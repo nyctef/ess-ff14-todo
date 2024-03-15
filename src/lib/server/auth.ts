@@ -5,9 +5,14 @@ import pg from 'pg';
 
 // file based on https://lucia-auth.com/getting-started/sveltekit
 
-export const db_pool = new pg.Pool();
+const connectionString = process.env.FF14_TODO_PG_CONNECTION_STRING;
+if (!connectionString) {
+  throw new Error('FF14_TODO_PG_CONNECTION_STRING not set');
+}
 
-const adapter = new NodePostgresAdapter(db_pool, {
+export const client = new pg.Client(connectionString);
+
+const adapter = new NodePostgresAdapter(client, {
   user: 'auth_user',
   session: 'user_session'
 });

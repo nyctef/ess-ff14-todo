@@ -3,12 +3,13 @@ import { fail, redirect } from '@sveltejs/kit';
 import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
 import type { RequestEvent } from '../$types.js';
-import { db_pool } from '$lib/server/auth';
+import { client } from '$lib/server/auth';
 
 // based on https://lucia-auth.com/tutorials/username-and-password/sveltekit
 
 export const actions = {
   default: async (event: RequestEvent) => {
+    console.log('signup start');
     const formData = await event.request.formData();
     const username = formData.get('username');
     const password = formData.get('password');
@@ -30,18 +31,28 @@ export const actions = {
       });
     }
 
-    const userId = generateId(15);
     const hashedPassword = await new Argon2id().hash(password);
+    let userId = null;
 
-    // TODO: check if username is already used
-    // (this is a TODO in the tutorial as well!)
-    const db = await db_pool.connect();
-    await db.table('user').insert({
-      id: userId,
-      username: username,
-      hashed_password: hashedPassword
-    });
+    try {
+      let idResult = await client.query(
+        `
+      INSERT INTO user (username, hashed_password)
+      VALUES (\$1, \$2)
+      RETURNING id;`,
+        [username, hashedPassword]
+      );
+      userId = idResult.rows[0].id;
+    } catch (e) {
+      // TODO: catch unique constraint violation for duplicate username explicitly
+      console.error(e);
+      return fail(500, {
+        message: 'Internal server error ' + e
+      });
+    }
 
+    // TODO: how important is it to create the session with a userId here instead of just using the username?
+    // the docs seem to make the distinction explicit
     const session = await lucia.createSession(userId, {});
     const sessionCookie = lucia.createSessionCookie(session.id);
     event.cookies.set(sessionCookie.name, sessionCookie.value, {

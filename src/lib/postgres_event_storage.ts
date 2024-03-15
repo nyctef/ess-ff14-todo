@@ -8,6 +8,12 @@ CREATE TABLE events(
     data jsonb
 );
 
+CREATE TABLE users(
+    id integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    username text UNIQUE NOT NULL,
+    hashed_password text NOT NULL
+);
+
 */
 
 export class PostgresEventStorage implements EventStorage {
