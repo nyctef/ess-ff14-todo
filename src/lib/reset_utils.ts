@@ -3,7 +3,7 @@ import type { Reset, Todo } from './types';
 /** Get a time near 00:01 on the current day */
 function floorDay(date: Date): Date {
   const result = new Date(date);
-  result.setHours(0, 0, 0, 0);
+  result.setUTCHours(0, 0, 0, 0);
   return result;
 }
 
@@ -14,19 +14,19 @@ function floorWeek(date: Date): Date {
   // so we add 1 to make it zero-indexed on Monday.
   // .setDate() is kind to us and does a useful thing even if the
   // resulting day-of-month is negative.
-  result.setDate(result.getDate() - result.getDay() + 1);
+  result.setUTCDate(result.getUTCDate() - result.getUTCDay() + 1);
   return floorDay(result);
 }
 
 function addDays(date: Date, days: number): Date {
   const result = new Date(date);
-  result.setDate(result.getDate() + days);
+  result.setUTCDate(result.getUTCDate() + days);
   return result;
 }
 
 function addHours(date: Date, hours: number): Date {
   const result = new Date(date);
-  result.setHours(result.getHours() + hours);
+  result.setUTCHours(result.getUTCHours() + hours);
   return result;
 }
 
