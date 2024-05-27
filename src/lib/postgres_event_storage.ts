@@ -14,6 +14,12 @@ CREATE TABLE users(
     hashed_password text NOT NULL
 );
 
+CREATE TABLE sessions(
+    id TEXT PRIMARY KEY,
+    expires_at TIMESTAMPTZ NOT NULL,
+    user_id integer NOT NULL REFERENCES users(id)
+)
+
 */
 
 export class PostgresEventStorage implements EventStorage {

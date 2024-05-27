@@ -32,8 +32,8 @@ client.on('error', (err) => {
 // });
 
 const adapter = new NodePostgresAdapter(client, {
-  user: 'auth_user',
-  session: 'user_session'
+  user: 'users',
+  session: 'sessions'
 });
 
 export const lucia = new Lucia(adapter, {
