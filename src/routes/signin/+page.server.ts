@@ -1,8 +1,6 @@
-import { lucia } from '$lib/server/auth';
+import { lucia, client } from '$lib/server/auth';
 import { fail, redirect } from '@sveltejs/kit';
 import { Argon2id } from 'oslo/password';
-import { client } from '$lib/server/auth';
-
 import type { Actions } from './$types';
 
 export const actions: Actions = {

@@ -1,9 +1,8 @@
-import { lucia } from '$lib/server/auth';
+import { lucia, client } from '$lib/server/auth';
 import { fail, redirect } from '@sveltejs/kit';
 import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
 import type { RequestEvent } from '../$types.js';
-import { client } from '$lib/server/auth';
 
 // based on https://lucia-auth.com/tutorials/username-and-password/sveltekit
 
