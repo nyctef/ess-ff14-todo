@@ -9,6 +9,8 @@ import { client } from '$lib/server/auth';
 
 export const actions = {
   default: async (event: RequestEvent) => {
+    return fail(400, { message: 'Signup currently unavailable' });
+
     const formData = await event.request.formData();
     const username = formData.get('username');
     const password = formData.get('password');
