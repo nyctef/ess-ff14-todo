@@ -5,7 +5,7 @@ import pg from 'pg';
 
 // file based on https://lucia-auth.com/getting-started/sveltekit
 
-// TODO: dedupe (plus use a pool instead of a single client?)
+// TODO: dedupe
 const connectionString = process.env.FF14_TODO_PG_CONNECTION_STRING;
 if (!connectionString) {
   throw new Error('FF14_TODO_PG_CONNECTION_STRING not set');
