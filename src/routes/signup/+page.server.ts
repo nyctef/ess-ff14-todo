@@ -9,10 +9,10 @@ import { client } from '$lib/server/auth';
 
 export const actions = {
   default: async (event: RequestEvent) => {
-    console.log('signup start');
     const formData = await event.request.formData();
     const username = formData.get('username');
     const password = formData.get('password');
+
     // username must be between 4 ~ 31 characters, and only consists of lowercase letters, 0-9, -, and _
     // keep in mind some database (e.g. mysql) are case insensitive
     if (
@@ -21,11 +21,13 @@ export const actions = {
       username.length > 31 ||
       !/^[a-z0-9_-]+$/.test(username)
     ) {
+      console.log('Invalid username');
       return fail(400, {
         message: 'Invalid username'
       });
     }
     if (typeof password !== 'string' || password.length < 6 || password.length > 255) {
+      console.log('Invalid password');
       return fail(400, {
         message: 'Invalid password'
       });
@@ -35,17 +37,18 @@ export const actions = {
     let userId = null;
 
     try {
-      let idResult = await client.query(
+      const idResult = await client.query(
         `
-      INSERT INTO user (username, hashed_password)
-      VALUES (\$1, \$2)
-      RETURNING id;`,
+      INSERT INTO users(username, hashed_password)
+      VALUES ($1, $2)
+      RETURNING id`,
         [username, hashedPassword]
       );
+      console.log({ idresult });
       userId = idResult.rows[0].id;
     } catch (e) {
       // TODO: catch unique constraint violation for duplicate username explicitly
-      console.error(e);
+      console.log(e);
       return fail(500, {
         message: 'Internal server error ' + e
       });
